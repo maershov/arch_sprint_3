@@ -1,0 +1,15 @@
+@startuml
+title Умный дом Context Diagram
+
+top to bottom direction
+
+!include <C4/C4_Context>
+
+Person(user, "Пользователь", "Пользователь системы Умный дом")
+System(SmartHomeSystem, "Система Умный дом", "Управляет отоплением, отображает текущую температуру")
+
+System_Ext(sensor, "Датчики", "API датчиков", "Использует REST API, формат данных JSON")
+Rel(user, SmartHomeSystem, "Пользуется системой")
+Rel(SmartHomeSystem, sensor, "Получает данные о температуре, отправляет команды")
+
+@enduml

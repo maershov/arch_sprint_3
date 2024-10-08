@@ -1,0 +1,57 @@
+@startuml
+
+entity House {
+  * id
+  --
+  * user_id
+  --
+  * address
+}
+
+entity User {
+  * id
+  --
+  * name
+}
+
+entity Module {
+  * id
+  --
+  * house_id
+  * device_type_id
+  --
+  * serial_number
+  * title
+}
+
+entity DeviceType {
+  * id
+  --
+  * code
+  * description
+}
+
+entity Device {
+  * id
+  --
+  * module_id
+  --
+  * serial_number
+  * status
+}
+
+entity Telemetry {
+  * id
+  --
+  * device_id
+  --
+  * datetime
+  * data
+}
+
+Telemetry }|-- Device
+House }|-- User
+Module }|-- House
+Module }|-- DeviceType
+Device }|-- Module
+@enduml

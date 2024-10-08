@@ -1,0 +1,14 @@
+_format_version: "1.1"
+
+services:
+  - name: telemetry-service
+    url: http://telemetry-service:3000
+    routes:
+      - paths:
+          - /telemetry-service
+
+  - name: device-service
+    url: http://device-service:3000
+    routes:
+      - paths:
+          - /device-service

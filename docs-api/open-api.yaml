@@ -1,0 +1,306 @@
+openapi: 3.0.3
+info:
+  title: Умный дом. Пользовательский API
+  version: 0.0.1
+paths:
+  /device-types:
+    post:
+      tags:
+        - Микросервис «Управление устройствами»
+      summary: Создаёт тип устройства
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                code:
+                  type: string
+                  example: heating
+                description:
+                  type: string
+                  example: Контроль температуры
+      responses:
+        '200':
+          description: успех
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    format: int64
+                    example: 1
+        '500':
+          description: ошибка сервера
+
+  /modules:
+    post:
+      tags:
+        - Микросервис «Управление устройствами»
+      summary: Создаёт модуль
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                house_id:
+                  type: integer
+                  format: int64
+                  example: 1
+                device_type_id:
+                  type: integer
+                  format: int64
+                  example: 1
+                serial_number:
+                  type: string
+                  example: m111
+                title:
+                  type: string
+                  example: Модуль отопления
+      responses:
+        '200':
+          description: успех
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    format: int64
+                    example: 1
+        '500':
+          description: ошибка сервера
+
+  /devices:
+    post:
+      tags:
+        - Микросервис «Управление устройствами»
+      summary: Создаёт устройство
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                module_id:
+                  type: integer
+                  format: int64
+                  example: 1
+                serial_number:
+                  type: string
+                  example: d111
+
+      responses:
+        '200':
+          description: успех
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    format: int64
+                    example: 1
+        '500':
+          description: ошибка сервера
+
+  /device/{device_id}:
+    get:
+      tags:
+        - Микросервис «Управление устройствами»
+      summary: Возвращает подробную информацию о конкретном устройстве по его ID
+      parameters:
+        - name: device_id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: успех
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    format: int64
+                    example: 1
+                  module_id:
+                    type: integer
+                    format: int64
+                    example: 1
+                  serial_number:
+                    type: string
+                    example: d111
+                  status:
+                    type: string
+                    example: d111
+        '404':
+          description: устройство не найдено
+        '500':
+          description: ошибка сервера
+
+  /device/{device_id}/status:
+    put:
+      tags:
+        - Микросервис «Управление устройствами»
+      summary: Обновляет статус устройства
+      parameters:
+        - name: device_id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                status:
+                  type: string
+                  example: on
+      responses:
+        '200':
+          description: успех
+        '404':
+          description: Устройство не найдено
+        '500':
+          description: Ошибка сервера
+
+  /device/{device_id}/commands:
+    post:
+      tags:
+        - Микросервис «Управление устройствами»
+      summary: Отправляет команду устройству
+      parameters:
+        - name: device_id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                command:
+                  type: string
+                  example: установить температуру 22 градуса
+      responses:
+        '200':
+          description: успех
+        '404':
+          description: устройство не найдено
+        '500':
+          description: ошибка сервера
+
+  /telemetry/latest:
+    get:
+      tags:
+        - Микросервис «Телеметрия»
+      summary: Возвращает последнее полученное значение телеметрии для устройства
+      parameters:
+        - name: device_id
+          in: query
+          required: true
+          schema:
+            type: integer
+            format: int64
+            example: 1
+      responses:
+        '200':
+          description: успех
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    format: int64
+                    example: 1
+                  device_id:
+                    type: integer
+                    format: int64
+                    example: 1
+                  datetime:
+                    type: integer
+                    example: 1727210751214
+                  data:
+                    type: object
+                    example: {"temperature": "22C"}
+        '404':
+          description: данные не найдены
+        '500':
+          description: ошибка сервера
+
+  /telemetry:
+    get:
+      tags:
+        - Микросервис «Телеметрия»
+      summary: Возвращает последнее полученное значение телеметрии для устройства
+      parameters:
+        - name: device_id
+          in: query
+          required: true
+          schema:
+            type: integer
+            format: int64
+            example: 1
+        - name: from
+          in: query
+          required: true
+          schema:
+            type: string
+            format: date
+            example: 2024-09-22
+        - name: until
+          in: query
+          required: true
+          schema:
+            type: string
+            format: date
+            example: 2024-09-25
+
+      responses:
+        '200':
+          description: успех
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                      format: int64
+                      example: 1
+                    device_id:
+                      type: integer
+                      format: int64
+                      example: 1
+                    datetime:
+                      type: integer
+                      example: 1727210751214
+                    data:
+                      type: object
+                      example: {"temperature": "22C"}
+        '500':
+          description: ошибка сервера

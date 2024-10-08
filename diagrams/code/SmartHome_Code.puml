@@ -1,0 +1,19 @@
+@startuml
+title Умный дом Code Diagram
+
+@startuml
+enum DeviceStatus
+DeviceStatus : on
+DeviceStatus : off
+
+DeviceChangeStatusDTO : DeviceStatus status
+DeviceChangeStatusDTO : UUID deviceId
+
+DeviceServiceLayer o-- DeviceRepoLayer : updateStatus(dto.deviceId, dto.status)
+DeviceServiceLayer o-- DeviceProducer : produceStatus(dto.deviceId, dto.status)
+
+DeviceServiceLayer : void changeStatus(DeviceChangeStatusDTO dto)
+DeviceRepoLayer : Integer updateStatus(UUID deviceId, DeviceStatus status)
+DeviceProducer : void produceStatus(UUID deviceId, DeviceStatus status)
+
+@enduml

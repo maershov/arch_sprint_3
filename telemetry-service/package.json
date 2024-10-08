@@ -1,0 +1,10 @@
+{
+  "name": "telemetry-service",
+  "version": "1.0.0",
+  "description": "telemetry service",
+  "scripts": {},
+  "dependencies": {
+    "express": "^4.21.0",
+    "kafkajs": "^2.2.4"
+  }
+}
