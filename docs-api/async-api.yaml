@@ -1,0 +1,36 @@
+asyncapi: '2.6.0'
+info:
+  title: Умный дом. API для взаимодействия с устройствами
+  version: '0.0.1'
+
+channels:
+  devices.commands:
+    publish:
+      message:
+        name: deviceCommand
+        title: Отправляет команду устройству
+        payload:
+          type: object
+          properties:
+            command:
+              type: string
+            device_id:
+              type: integer
+          examples:
+            - {"device_id": 1, "command": "установить температуру 20 градусов"}
+
+  telemetry:
+    subscribe:
+      message:
+        name: telemetry
+        title: Получает данные телеметрии
+        payload:
+          type: object
+          properties:
+            data:
+              type: object
+            device_id:
+              type: integer
+          examples:
+            - {"device_id": 1, "data": {"temperature": "20C"}}
+

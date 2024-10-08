@@ -1,0 +1,42 @@
+@startuml
+title Умный дом Container Diagram
+
+!include <C4/C4_Container>
+
+top to bottom direction
+
+Person(user, "Пользователь", "Пользователь системы Умный дом")
+System_Boundary(system, "Система Умный дом") {
+    Container(apiGateway, "АPI Gateway", "Kusk", "Маршрутизация запросов, балансировка нагрузки, аутентификация, авторизация")
+
+    Container(telemetryService, "Телеметрия", "Node.js", "Ведение информации поступающей с датчиков")
+    Container(deviceService, "Управление устройствами", "Node.js", "Управление отоплением, автоматическое поддержание температуры")
+    Container(userService, "Управление пользователями", "Node.js", "Управление пользователями")
+
+    ContainerDb(telemetryDb, "База данных", "ClickHouse")
+    ContainerDb(deviceDb, "База данных", "PostgreSQL")
+    ContainerDb(userDb, "База данных", "PostgreSQL")
+    ContainerQueue(kafka, "Шина данных", "Kafka")
+
+    Rel(apiGateway, telemetryService, "Получить телеметрию: последнюю, за период", "REST")
+    Rel(apiGateway, deviceService, "CRUD, вкл/выкл, выполнить команду", "REST")
+    Rel(apiGateway, userService, "СRUD", "REST")
+
+    Rel(deviceService, kafka, "Отправляет команды")
+    Rel_L(kafka, telemetryService, "Отправляет телеметрия")
+
+    Rel(deviceService, deviceDb, "Чтение / запись")
+    Rel(telemetryService, telemetryDb, "Чтение / запись")
+    Rel(userService, userDb, "Чтение / запись")
+
+}
+
+
+System_Ext(device, "Устройства", "API устройств", "Async API, формат данных JSON")
+
+Rel(kafka, device, "Отправляет команды")
+Rel(device, kafka, "Отправляет телеметрию")
+
+Rel(user, apiGateway, "Пользуется системой", "REST")
+
+@enduml
